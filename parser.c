@@ -9,8 +9,8 @@ int expr();
 // #define LETTER 0
 #define DIGIT 1
 #define OP 99
-#define UNKNOWN 18
 /* Token codes */
+#define UNKNOWN 18
 #define ADD_OP 21
 #define SUB_OP 22
 #define MULT_OP 23
@@ -19,13 +19,14 @@ int expr();
 #define RIGHT_PAREN 26
 
 const int sentence_length = 30; //문장 길이
-const int lexeme_length = 9; //lexeme의 최대 길이
+const int lexme_length = 8; //lexeme의 최대 길이
 char sentence[sentence_length]; //문장의 총길이는 30자 
 int current_index = 0;
 char ch; //현재 읽는 글자
 int char_class; //첫 글자를 하나 읽은 뒤 타입을 지정한다
 int token_class;
-char lex_temp[lexeme_length];
+char lex_temp[lexme_length];
+
 
 int lookup(char ch){
     int next_token;
@@ -65,13 +66,13 @@ char next(){
 }
 
 int add_char(char ch, char lexeme[], int lexeme_len){
-    if (lexeme_len < lexeme_length){
+    if (lexeme_len < lexme_length){
         lexeme[lexeme_len] = ch;
         return 1;
     }
     else {
         printf("Number size out of bound\n"); //렉심의 크기가 지나치게 크면 예외를 발생 시킨다.
-        return 0;
+        exit(0);
     }
 }
 
@@ -90,7 +91,7 @@ void get_char(){
 }
 
 void lex(){
-    char lexeme[lexeme_length] = {0,};//렉심 하나 당 최대 길이는 8 (1억 자리의 연산이 마지노선) 마지막은 EOF
+    char lexeme[lexme_length] = {0,};//렉심 하나 당 최대 길이는 8 (1억 자리의 연산이 마지노선) 마지막은 EOF
     int lexeme_len = 0;
     switch (char_class){
         case DIGIT:
@@ -121,7 +122,7 @@ void lex(){
     }
 
     // printf("Next token is: %d, Next lexeme is %s\n", token_class, lexeme);
-    for(int i=0; i < lexeme_length; i++) lex_temp[i] = lexeme[i];
+    for(int i=0; i < lexme_length; i++) lex_temp[i] = lexeme[i];
 }
 
 void syntax_error(){
@@ -143,7 +144,6 @@ int number(){
 
 int factor() {
     int result;
-    // printf("Enter factor \n");
     int flag = 1;
     if (token_class == SUB_OP){
         lex();
@@ -158,17 +158,14 @@ int factor() {
 
     else if (token_class == DIGIT){
         result = number(); //터미널로 변환을 진행
-        printf("%d\n",result);
         lex();
     }
 
     else syntax_error();
-    // printf("Exit factor \n");
     return result * flag;
 }
 
 int term() {
-    // printf("Enter term \n");
     int result;
     result = factor();
     while (token_class == MULT_OP || token_class == DIV_OP) { 
@@ -181,12 +178,10 @@ int term() {
             result /= factor();
         }
     }
-    // printf("Exit term \n");
     return result;
 }
 
 int expr(){
-    // printf("Enter expr \n");
     int result;
     result = term();
     while (token_class == ADD_OP || token_class == SUB_OP) { 
@@ -199,7 +194,6 @@ int expr(){
             result -= term();
         }       
     }
-    // printf("Exit expr \n");
     return result;
 }
 
